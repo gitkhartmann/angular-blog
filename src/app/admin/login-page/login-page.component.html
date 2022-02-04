@@ -1,0 +1,21 @@
+<form class="card" [formGroup]="form" (ngSubmit)="submit()">
+	<h2>Войти в панель администратора</h2>
+	<div class="form-control" [ngClass]="{invalid: isInvalid('email')}">
+		<label for="email">Email:</label>
+		<input id="email" type="email" formControlName="email">
+		<div class="validation" *ngIf="isInvalid('email')">
+			<small *ngIf="isErrors('email', 'email')">Введите корректный e-mail по типу: "vvv@gmail.com"</small>
+			<small *ngIf="isErrors('email', 'required')">Поле обязательно для заполнения</small>
+		</div>
+	</div>
+	<div class="form-control" [ngClass]="{invalid: isInvalid('password')}">
+		<label for="password">Пароль:</label>
+		<input id="password" type="password" formControlName="password">
+		<div class="validation" *ngIf="isInvalid('password')">
+			<small *ngIf="isErrors('password', 'minlength')">Введите корректный пароль от 6ти символов</small>
+			<small *ngIf="isErrors('password', 'required')">Поле обязательно для заполнения</small>
+		</div>
+	</div>
+	<button type="submit" class="btn btn-primary" [disabled]="form.invalid">Войти</button>
+
+</form>
