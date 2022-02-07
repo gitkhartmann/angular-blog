@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { User } from '../../shared/interfaces';
+import { AuthService } from '../shared/services/auth.service';
 
 @Component({
 	selector: 'app-login-page',
@@ -8,19 +11,47 @@ import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators }
 })
 export class LoginPageComponent implements OnInit {
 	form!: FormGroup
-	constructor() { }
+	submitted = false
+	message!: string;
+
+	constructor(
+		public auth: AuthService,
+		private router: Router,
+		private route: ActivatedRoute
+	) { }
 
 	ngOnInit(): void {
+		this.route.queryParams.subscribe((params: Params) => {
+			if (params['loginAgain']) {
+				this.message = 'Пожалуйста, введите данные'
+			}
+		})
 		this.form = new FormGroup({
 			email: new FormControl(null, [Validators.required, Validators.email]),
 			password: new FormControl(null, [Validators.required, Validators.minLength(6)])
 		})
 	}
+
 	submit() {
 		if (this.form.invalid) {
 			return
 		}
+
+		this.submitted = true
+
+		const user: User = {
+			email: this.form.value.email,
+			password: this.form.value.password,
+		}
+
+		this.auth.logIn(user).subscribe(() => {
+			this.form.reset()
+			this.router.navigate(['/admin', 'dashboard'])
+			this.submitted = false
+		}, () => this.submitted = false)
+
 	}
+
 	isErrors(fieldName: string, errorName: string): boolean {
 		if (!this.form.get(fieldName)?.errors) {
 			return false
@@ -30,6 +61,7 @@ export class LoginPageComponent implements OnInit {
 		}
 		return false
 	}
+
 	isInvalid(fieldName: string): boolean {
 		return this.form.get(fieldName)!.touched && this.form.get(fieldName)!.invalid
 	}

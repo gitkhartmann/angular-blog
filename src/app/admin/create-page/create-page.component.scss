@@ -1,0 +1,13 @@
+form {
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+input{
+	color: #888;
+	font-size: small;
+	&:focus{
+		outline: none;
+	}
+}
+
