@@ -5,6 +5,7 @@ import { ActivatedRoute, Params, Route, Router } from '@angular/router';
 import { Subscription, switchMap } from 'rxjs';
 import { Post } from 'src/app/shared/interfaces';
 import { PostsService } from 'src/app/shared/posts.service';
+import { AlertServices } from '../shared/services/alert.services';
 
 @Component({
 	selector: 'app-edit-page',
@@ -21,6 +22,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
 	constructor(
 		private route: ActivatedRoute,
 		private postsServise: PostsService,
+		private alert: AlertServices
 		//private router: Router
 	) { }
 
@@ -70,6 +72,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
 			title: this.form.value.title
 		}).subscribe(() => {
 			this.submitted = false
+			this.alert.succes('Пост был обновлен')
 			//this.router.navigate(['/admin', 'dashboard'])
 		})
 	}
